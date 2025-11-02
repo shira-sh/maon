@@ -3,123 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
 <title>אפליקציית גן הילדים</title>
-<style>
-  body {
-    font-family: "Heebo", sans-serif;
-    background: linear-gradient(180deg, #ffe6e6, #fff5cc);
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
 
-  h1 {
-    color: #ff6f61;
-    margin-top: 40px;
-    font-size: 2em;
-  }
-
-  .container {
-    display: none;
-    padding: 20px;
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .active {
-    display: block;
-  }
-
-  .buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin: 40px auto;
-    max-width: 600px;
-  }
-
-  button {
-    background: linear-gradient(135deg, #ffcc80, #ff8a65);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 15px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.3s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-  }
-
-  .form-group {
-    margin: 15px 0;
-  }
-
-  input, textarea {
-    width: 90%;
-    max-width: 400px;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 1em;
-  }
-
-  textarea {
-    height: 100px;
-    resize: vertical;
-  }
-
-  .back-btn {
-    margin-top: 20px;
-    background: #64b5f6;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
 </head>
 <body>
 
-  <div id="home" class="container active">
-    <h1>אפליקציית גן הילדים</h1>
-    <div class="buttons">
-      <button onclick="navigate('messages')">הודעות להורים</button>
-      <button>נוכחות ילדים</button>
-      <button>מעקב תשלומים</button>
-      <button>תמונות ואלבומים</button>
-      <button>תכנון שבועי</button>
-    </div>
-  </div>
+<!-- כפתור חזרה -->
+<div class="fixed-back" id="popupBackBtn" onclick="show('home')">🏠 חזרה לדף הבית</div>
 
-  <div id="messages" class="container">
-    <h1>שליחת הודעה להורים</h1>
-    <div class="form-group">
-      <input type="text" id="gardenName" placeholder="שם הגן">
-    </div>
-    <div class="form-group">
-      <input type="text" id="subject" placeholder="נושא ההודעה">
-    </div>
-    <div class="form-group">
-      <textarea id="content" placeholder="תוכן ההודעה"></textarea>
-    </div>
-    <div class="form-group">
-      <input type="text" id="replyTarget" placeholder="יעד תשובות הורים (למשל מייל או מספר)">
-    </div>
-    <button>שליחה</button>
-    <button class="back-btn" onclick="navigate('home')">חזרה לדף הבית</button>
-  </div>
+<!-- div מרכזי שבו נטען התוכן -->
+<div id="content"></div>
+
+<!-- תבניות לכל הדפים -->
+<template id="homeTpl">
+  <h1>מרכז הגן האוטומטי</h1>
+  <div class="buttons ">
+   <button class="green" onclick="show('messages')">🧒 רישום ילדים חדשים</button></a>
+    <button class="pink" onclick="show('nursery')">📋 רשימת הילדים לפי כיתות</button>
+    <button class="cyan" >🕘 נוכחות יומית</button>
+    <button class="pink" onclick="show('messages')">💬 הודעות להורים</button>
+    <button class="purple">💳 תשלומים וחשבוניות</button>
+    <button class="yellow">📅 לוח פעילויות</button>
+    <button class="green">📦 ניהול מלאי וספקים</button>
+    <button class="orange">👩‍🏫 צוות הגן</button>
+    <button class="purple">📈 דוחות חודשיים</button>
+   </div>
+</template>
+
+<template id="messagesTpl">
+  <h1>שליחת הודעה להורים</h1>
+  <input type="text" placeholder="שם הגן">
+  <input type="text" placeholder="נושא ההודעה">
+  <textarea placeholder="תוכן ההודעה"></textarea>
+  <input type="text" placeholder="יעד תשובות הורים (מייל או מספר)">
+</template>
+
+<template id="registrationTpl">
+  <h1>רישום ילד למעון</h1>
+  <input type="text" placeholder="שם פרטי של הילד">
+  <input type="text" placeholder="שם משפחה של הילד">
+  <input type="date" placeholder="תאריך לידה">
+  <select>
+    <option value="">בחר מין</option>
+    <option value="זכר">זכר</option>
+    <option value="נקבה">נקבה</option>
+  </select>
+  <input type="email" placeholder="מייל של אחד ההורים">
+</template>
+
+<template id="nurseryTpl">
+  <h1>חלוקת מעונות לשמות לפי גילאים</h1>
+  <div id="nurseryRows" class="popup-scroll"></div>
+  <button onclick="addNurseryRow()">＋</button>
+</template>
+
+<!-- דפים נוספים -->
+<template id="attendanceTpl"><h1>נוכחות ילדים</h1></template>
+<template id="paymentsTpl"><h1>מעקב תשלומים</h1></template>
+<template id="albumsTpl"><h1>תמונות ואלבומים</h1></template>
+<template id="weeklyPlanTpl"><h1>תכנון שבועי</h1></template>
 
 <script>
-  function navigate(pageId) {
-    document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-  }
+function show(templateId) {
+  const tpl = document.getElementById(templateId + 'Tpl');
+  document.getElementById('content').innerHTML = tpl.innerHTML;
+  // הצגת כפתור חזרה אם לא בית
+  document.getElementById('popupBackBtn').style.display = templateId==='home'?'none':'block';
+}
+
+// פונקציה לדוגמה להוספת שורה דינמית
+function addNurseryRow() {
+  const container2 = document.getElementById('nurseryRows');
+  if (!container2) return;
+  const row = document.createElement('div');
+  row.style.display = 'flex';
+  row.style.gap = '5px';
+  row.innerHTML = `
+    <input type="text" placeholder="שם הגן">
+    <input type="date">
+    <input type="date">
+    <button onclick="this.parentElement.remove()">🗑</button>`;
+  container2.appendChild(row);
+}
+
+// טען את דף הבית כברירת מחדל
+show('home');
 </script>
 
 </body>
-</html>
+
