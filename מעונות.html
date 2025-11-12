@@ -1,95 +1,432 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<title>אפליקציית גן הילדים</title>
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אפליקציית גן הילדים</title>
+  <style>
+    body {
+      font-family: "Heebo", sans-serif;
+      background: url('https://i.postimg.cc/901XZqkW/gn.jpg') no-repeat center center / cover;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    h1 {
+      color: #222;
+      margin-top: 50px;
+      font-size: 2em;
+    }
+
+    .container {
+      display: none;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeIn 0.5s ease-in-out;
+      background: #fff;
+      border-radius: 25px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .active {
+      display: block;
+      margin: 100px auto;
+    }
+
+    .form-group {
+      margin: 12px 0;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 90%;
+      max-width: 450px;
+      padding: 12px;
+      margin: 5px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+      font-size: 1em;
+      background-color: #fff;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #ff4081;
+      box-shadow: 0 4px 12px rgba(255, 64, 129, 0.2);
+      outline: none;
+    }
+
+    button {
+      width: 90%;
+      max-width: 450px;
+      padding: 15px;
+      font-size: 1.1em;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover:enabled {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* צבעי הפלטה */
+    .yellow {
+      background: #FFD600;
+    }
+
+    .orange {
+      background: #FF6D00;
+    }
+
+    .pink {
+      background: #FF4081;
+    }
+
+    .purple {
+      background: #9C27B0;
+    }
+
+    .cyan {
+      background: #00BCD4;
+    }
+
+    .green {
+      background: #4CAF50;
+    }
+
+    .back-btn {
+      background: #607d8b;
+      margin-top: 10px;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 0.95em;
+      color: #555;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* פופאפ */
+    .popup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 999;
+    }
+
+    .popup.active {
+      display: flex;
+    }
+
+    .popup-content {
+      background: #fff;
+      border-radius: 20px;
+      width: 80%;
+      max-width: 700px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .popup-scroll {
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 10px;
+      box-sizing: border-box;
+    }
+
+    /* פס גלילה */
+    .popup-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .popup-scroll::-webkit-scrollbar-thumb {
+      background-color: #b0c4de;
+      border-radius: 10px;
+    }
+
+    .popup-scroll::-webkit-scrollbar-thumb:hover {
+      background-color: #9bb4d1;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 1.4em;
+      cursor: pointer;
+      z-index: 10;
+      width: auto !important;
+    }
+
+    /* כפתור חזרה שמופיע רק בפופאפ */
+    .fixed-back {
+      display: none;
+      /* מוסתר כברירת מחדל */
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 2000;
+      padding: 10px 15px;
+      border-radius: 20px;
+      background: #607d8b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .fixed-back:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
 <body>
+  <!-- כפתור חזרה שיופיע רק כשפופאפ פתוח -->
+  <div class="fixed-back" id="popupBackBtn" onclick="closeAllPopups()">חזרה לדף הבית</div>
 
-<!-- כפתור חזרה -->
-<div class="fixed-back" id="popupBackBtn" onclick="show('home')">🏠 חזרה לדף הבית</div>
+  <!-- דף הבית -->
+  <div id="home" class="container active">
+    <h1>מרכז הגן האוטומטי</h1>
+    <div class="buttons">
+      <button class="orange" onclick="navigate('messages')">הודעות להורים</button>
+      <button class="green">נוכחות ילדים</button>
+      <button class="cyan">מעקב תשלומים</button>
+      <button class="purple">תמונות ואלבומים</button>
+      <button class="pink">תכנון שבועי</button>
+      <button class="yellow" onclick="navigate('registration')">רישום ילד למעון</button>
+      <button class="pink" onclick="openNurseryPopup()">חלוקת מעונות לשמות לפי גילאים</button>
+    </div>
+  </div>
 
-<!-- div מרכזי שבו נטען התוכן -->
-<div id="content"></div>
+  <!-- פופאפ חלוקת מעונות -->
+  <div class="popup" id="nurseryPopup">
+    <div class="popup-content" style="max-width:600px;">
+      <button class="close-btn" onclick="closeNurseryPopup()">✕</button>
+      <h2>חלוקת מעונות לשמות לפי גילאים</h2>
+      <div id="nurseryRows" class="popup-scroll"></div>
+      <div style="margin-top:15px;">
+        <button onclick="addNurseryRow()" style="width:auto;background:#00BCD4;border-radius:50%;padding:10px 15px;font-size:1.2em;color:white;cursor:pointer;">＋</button>
+      </div>
+    </div>
+  </div>
 
-<!-- תבניות לכל הדפים -->
-<template id="homeTpl">
-  <h1>מרכז הגן האוטומטי</h1>
-  <div class="buttons ">
-   <button class="green" onclick="show('messages')">🧒 רישום ילדים חדשים</button></a>
-    <button class="pink" onclick="show('nursery')">📋 רשימת הילדים לפי כיתות</button>
-    <button class="cyan" >🕘 נוכחות יומית</button>
-    <button class="pink" onclick="show('messages')">💬 הודעות להורים</button>
-    <button class="purple">💳 תשלומים וחשבוניות</button>
-    <button class="yellow">📅 לוח פעילויות</button>
-    <button class="green">📦 ניהול מלאי וספקים</button>
-    <button class="orange">👩‍🏫 צוות הגן</button>
-    <button class="purple">📈 דוחות חודשיים</button>
-   </div>
-</template>
+  <!-- הודעות -->
+  <div id="messages" class="container">
+    <h1>שליחת הודעה להורים</h1>
+    <div class="form-group">
+      <input type="text" id="gardenName" placeholder="שם הגן">
+    </div>
+    <div class="form-group">
+      <input type="text" id="subject" placeholder="נושא ההודעה">
+    </div>
+    <div class="form-group">
+      <textarea id="content" placeholder="תוכן ההודעה"></textarea>
+    </div>
+    <div class="form-group">
+      <input type="text" id="replyTarget" placeholder="יעד תשובות הורים (מייל או מספר)">
+    </div>
+    <button onclick="sendMessage()" class="orange">שליחה</button>
+    <button class="back-btn" onclick="navigate('home')">חזרה לדף הבית</button>
+  </div>
 
-<template id="messagesTpl">
-  <h1>שליחת הודעה להורים</h1>
-  <input type="text" placeholder="שם הגן">
-  <input type="text" placeholder="נושא ההודעה">
-  <textarea placeholder="תוכן ההודעה"></textarea>
-  <input type="text" placeholder="יעד תשובות הורים (מייל או מספר)">
-</template>
+  <!-- רישום ילד למעון -->
+  <div id="registration" class="container">
+    <h1>רישום ילד למעון</h1>
+    <div class="form-group">
+      <input type="text" id="childFirstName" placeholder="שם פרטי של הילד">
+    </div>
+    <div class="form-group">
+      <input type="text" id="childLastName" placeholder="שם משפחה של הילד">
+    </div>
+    <div class="form-group">
+      <input type="date" id="birthDate" placeholder="תאריך לידה">
+    </div>
+    <div class="form-group">
+      <select id="gender">
+        <option value="">בחר מין</option>
+        <option value="זכר">זכר</option>
+        <option value="נקבה">נקבה</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="email" id="parentEmail" placeholder="מייל של אחד ההורים">
+    </div>
 
-<template id="registrationTpl">
-  <h1>רישום ילד למעון</h1>
-  <input type="text" placeholder="שם פרטי של הילד">
-  <input type="text" placeholder="שם משפחה של הילד">
-  <input type="date" placeholder="תאריך לידה">
-  <select>
-    <option value="">בחר מין</option>
-    <option value="זכר">זכר</option>
-    <option value="נקבה">נקבה</option>
-  </select>
-  <input type="email" placeholder="מייל של אחד ההורים">
-</template>
+    <h3>פרטי הורה 1</h3>
+    <input type="text" id="p1First" placeholder="שם פרטי">
+    <input type="text" id="p1Last" placeholder="שם משפחה">
+    <input type="text" id="p1Id" placeholder="תעודת זהות">
+    <input type="text" id="p1Phone" placeholder="טלפון"><br><br>
 
-<template id="nurseryTpl">
-  <h1>חלוקת מעונות לשמות לפי גילאים</h1>
-  <div id="nurseryRows" class="popup-scroll"></div>
-  <button onclick="addNurseryRow()">＋</button>
-</template>
+    <h3>פרטי הורה 2</h3>
+    <input type="text" id="p2First" placeholder="שם פרטי">
+    <input type="text" id="p2Last" placeholder="שם משפחה">
+    <input type="text" id="p2Id" placeholder="תעודת זהות">
+    <input type="text" id="p2Phone" placeholder="טלפון"><br><br>
 
-<!-- דפים נוספים -->
-<template id="attendanceTpl"><h1>נוכחות ילדים</h1></template>
-<template id="paymentsTpl"><h1>מעקב תשלומים</h1></template>
-<template id="albumsTpl"><h1>תמונות ואלבומים</h1></template>
-<template id="weeklyPlanTpl"><h1>תכנון שבועי</h1></template>
+    <p>הרישום מותנה בתשלום של <strong>150 ₪</strong></p>
+    <button id="paymentBtn" class="green" onclick="openPopup()">מעבר לתשלום</button><br><br>
+    <button id="submitReg" class="orange" disabled onclick="sendRegistration()">שליחה</button>
+    <button class="back-btn" onclick="navigate('home')">חזרה לדף הבית</button>
+  </div>
 
-<script>
-function show(templateId) {
-  const tpl = document.getElementById(templateId + 'Tpl');
-  document.getElementById('content').innerHTML = tpl.innerHTML;
-  // הצגת כפתור חזרה אם לא בית
-  document.getElementById('popupBackBtn').style.display = templateId==='home'?'none':'block';
-}
+  <!-- פופאפ תשלום -->
+  <div class="popup" id="paymentPopup">
+    <div class="popup-content popup-scroll">
+      <button class="close-btn" onclick="closePopup()">✕</button>
+      <h2>תשלום רישום</h2>
+      <input type="text" placeholder="שם בעל הכרטיס">
+      <input type="text" placeholder="מספר כרטיס">
+      <input type="text" placeholder="תוקף (MM/YY)">
+      <input type="text" placeholder="CVV"><br><br>
+      <button class="cyan" onclick="finishPayment()">שלם</button>
+    </div>
+  </div>
 
-// פונקציה לדוגמה להוספת שורה דינמית
-function addNurseryRow() {
-  const container2 = document.getElementById('nurseryRows');
-  if (!container2) return;
-  const row = document.createElement('div');
-  row.style.display = 'flex';
-  row.style.gap = '5px';
-  row.innerHTML = `
-    <input type="text" placeholder="שם הגן">
-    <input type="date">
-    <input type="date">
-    <button onclick="this.parentElement.remove()">🗑</button>`;
-  container2.appendChild(row);
-}
+  <script>
+    function openNurseryPopup() {
+      document.getElementById('nurseryPopup').classList.add('active');
+      showPopupBack();
+    }
 
-// טען את דף הבית כברירת מחדל
-show('home');
-</script>
+    function closeNurseryPopup() {
+      document.getElementById('nurseryPopup').classList.remove('active');
+      hidePopupBack();
+    }
 
+    function openPopup() {
+      document.getElementById('paymentPopup').classList.add('active');
+      showPopupBack();
+    }
+
+    function closePopup() {
+      document.getElementById('paymentPopup').classList.remove('active');
+      hidePopupBack();
+    }
+
+    function closeAllPopups() {
+      document.getElementById('nurseryPopup').classList.remove('active');
+      document.getElementById('paymentPopup').classList.remove('active');
+      hidePopupBack();
+    }
+
+    function showPopupBack() {
+      document.getElementById('popupBackBtn').style.display = 'block';
+    }
+
+    function hidePopupBack() {
+      const anyOpen = document.querySelector('.popup.active');
+      if (!anyOpen) document.getElementById('popupBackBtn').style.display = 'none';
+    }
+
+    // שורות דינמיות
+    function addNurseryRow(name = '', start = '', end = '') {
+      const container = document.getElementById('nurseryRows');
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.alignItems = 'center';
+      row.style.marginBottom = '10px';
+      row.style.gap = '8px';
+      row.innerHTML = `
+        <input type="text" placeholder="שם הגן" value="${name}" style="flex:2;padding:8px;border-radius:12px;border:1px solid #ddd;">
+        <input type="date" value="${start}" style="flex:1;padding:8px;border-radius:12px;border:1px solid #ddd;">
+        <input type="date" value="${end}" style="flex:1;padding:8px;border-radius:12px;border:1px solid #ddd;">
+        <button onclick="this.parentElement.remove()" style="background:#FF4081;border-radius:50%;color:white;width:32px;height:32px;font-weight:bold;cursor:pointer;">✕</button>
+      `;
+      container.appendChild(row);
+    }
+    addNurseryRow();
+
+    // תשלום והרשמה
+    function finishPayment() {
+      closePopup();
+      alert('תשלום התקבל בהצלחה');
+      document.getElementById('submitReg').disabled = false;
+    }
+
+    function sendRegistration() {
+      const data = {
+        childFirstName: document.getElementById('childFirstName').value,
+        childLastName: document.getElementById('childLastName').value,
+        birthDate: document.getElementById('birthDate').value,
+        gender: document.getElementById('gender').value,
+        parentEmail: document.getElementById('parentEmail').value
+      };
+
+      fetch('https://hook.eu2.make.com/b21gj8ir9chmms7q3l1viad8uxf9tndp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(r => r.ok ? alert('ההרשמה נשלחה בהצלחה') : alert('שגיאה בשליחה'))
+        .catch(err => alert('שגיאת רשת: ' + err.message));
+    }
+
+    function sendMessage() {
+      const data = {
+        gardenName: document.getElementById('gardenName').value,
+        subject: document.getElementById('subject').value,
+        content: document.getElementById('content').value,
+        replyTarget: document.getElementById('replyTarget').value
+      };
+
+      fetch('https://hook.eu2.make.com/bmnher9v9r9oqesxymo18cpmt6kzy9mr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(r => r.ok ? alert('הודעה נשלחה בהצלחה') : alert('שגיאה בשליחה'));
+    }
+
+    function navigate(pageId) {
+      document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+  </script>
 </body>
 
+</html>
